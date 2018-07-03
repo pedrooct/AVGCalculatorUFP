@@ -4,3 +4,8 @@ This is a simple webApp to calculate average ,this only works for UFP and comput
 This is built with php and python.  
 
  python is use to verify your account and get grades using web scraper robobrowser.
+
+
+Python modules:  
+- lxml
+-robobrowser
