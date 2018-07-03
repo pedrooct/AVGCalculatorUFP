@@ -1,5 +1,22 @@
 <?php
+/*
+Funçao que vai executar o bot em python para verificar e retornar notas do utilizador.
+Recebe como parametros Numero e palavra-passe do utilizador
+Retorna false se o login for invalido , Retorna as notas do utilziador se este for válido!
+Saber mais no bot loginPython.py...
+*/
+function verifyGetGrades($numero,$password)
+{
+  return shell_exec("python /vagrant/public/MedCalculatorUFP/api/loginPython.py ".$numero." ".$password);
+}
 
+
+/*
+Função que vai calcular a media , caso o utilizador escolha usar o login da UFP.
+Esta função vai primeiro , buscar os creditos de as disciplinas da licenciatura (Saber mais no bot getCredits.py)
+Após isto prepara um array associativo com as cadeiras como chaves e os creditos como valores.
+As notas do utilizador são enviadas por parametro na interface.
+*/
 function analyzeComputeString($result)
 {
   $resultt = shell_exec("python /vagrant/public/MedCalculatorUFP/api/getCredits.py ");
@@ -13,15 +30,16 @@ function analyzeComputeString($result)
   $totalCredits=0;
   $tempmed=0;
   $jsonD= json_decode($result);
-  $definitivas=$jsonD->grade->definitivo;
+  $definitivas=$jsonD->grade->definitivo;// só usa notas definitivas para o calculo
   for($i=0;$i<count($definitivas);$i++)
   {
-    if(strcmp($definitivas[$i]->Grau,"Licenciatura")==0)
+    if(strcmp($definitivas[$i]->Grau,"Licenciatura")==0) // só usa cadeiras da licenciatura
     {
-      foreach ($credits as $key => $cred)
+      foreach ($credits as $key => $cred) // precorremos o array de cadeiras
       {
-        if(strcasecmp(trim($definitivas[$i]->Unidade),trim($key))==0)
+        if(strcasecmp(trim($definitivas[$i]->Unidade),trim($key))==0) // Comparamos com as cadeiras que o utilizador já finalizou
         {
+          // calculo da média!
           $tempmed+=$definitivas[$i]->Nota*$cred;
           $totalCredits+=$cred;
           break;
@@ -31,6 +49,7 @@ function analyzeComputeString($result)
   }
   return $tempmed/$totalCredits;
 }
+//Esta função permite apagar uma entrada de informação se esta estiver incompleta!
 function reSize($data,$i,$counter)
 {
   $dataDummie=array();
@@ -63,6 +82,11 @@ function reSize($data,$i,$counter)
   return $dataDummie;
 
 }
+/*
+Esta função permite analizar o array de notas e creditos que o utilizador inseriu.
+Esta função permite verificar se o array está vazio ,tem falhas na informação ,se tudos os valores são numericos e se estão compreendidos
+entre os parametros necessários,impedindo assim exploits na API.
+*/
 function analyzeArray($data)
 {
   if(empty($data))
@@ -90,6 +114,7 @@ function analyzeArray($data)
   }
   return $data;
 }
+// Função que permite obter o numero total de créditos do array
 function getTotalCredits($data)
 {
   $count=0;
@@ -99,6 +124,7 @@ function getTotalCredits($data)
   }
   return $count;
 }
+//Esta função permite computar a média do aluno com base nas notas que ele inseriu!
 function computeAverage($data)
 {
   $temp=0;

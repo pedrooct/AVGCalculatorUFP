@@ -38,7 +38,7 @@ require_once "api/dataCal.php";
                 if(!empty($_POST['num']) && !empty($_POST['pass']) )
                 {
                   //shell_exec("python /vagrant/public/MedCalculatorUFP/api/loginPython.py")
-                  $result = shell_exec("python /vagrant/public/MedCalculatorUFP/api/loginPython.py ".$_POST['num']." ".$_POST['pass']);
+                  $result = verifyGetGrades($_POST['num'],$_POST['pass']);
                   if(!$result)
                   {
                     echo '<div class="error">OOOPS! Aparenta ter dados Errados </div>';
@@ -46,7 +46,7 @@ require_once "api/dataCal.php";
                   else {
                     echo '<div class="success">Login com sucesso </div>';
                     $result=analyzeComputeString($result);
-                    echo '<div class="info">Media Atual : '.$result.' Valores </div>';
+                    echo '<div class="info">Media Atual : '.round($result).' Valores </div>';
                   }
                 }
               }
