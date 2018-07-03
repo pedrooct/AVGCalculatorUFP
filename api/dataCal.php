@@ -2,37 +2,14 @@
 
 function analyzeComputeString($result)
 {
-  $credits=array("Física"=>"7",
-  "Gramática da comunicação"=>"3",
-  "Inglês"=>"3",
-  "Introdução à algoritmia e programação"=>"6",
-  "Matemática I 7Sistemas de informação"=>"4",
-  "Análise de sistemas"=>"6",
-  "Eletrónica aplicada"=>"7",
-  "Estatística aplicada"=>"7",
-  "Matemática II"=>"7",
-  "Opção I"=>"3",
-  "Algoritmos e estruturas de dados I"=>"6",
-  "Análise numérica"=>"5",
-  "Arquitetura de computadores"=>"6",
-  "Linguagens de programação I"=>"7",
-  "Sistemas digitais"=>"6",
-  "Algoritmos e estruturas de dados II"=>"6",
-  "Hardware e sensores"=>	"6",
-  "Investigação operacional"=>"4",
-  "Linguagens de programação II"=>"7",
-  "Sistemas operativos"=>"7",
-  "Bases de dados"=>"6",
-  "Engenharia de software"=>"6",
-  "Laboratório de programação"=>"5",
-  "Multimédia I"=>"6",
-  "Redes de computadores I"=>"7",
-  "Laboratório de projeto integrado"=>"7",
-  "Multimédia II"=>"6",
-  "Opcão II"=>"4",
-  "Redes de computadores II"=>"7",
-  "Sistemas distribuídos"=>"6"
-);
+  $resultt = shell_exec("python /vagrant/public/MedCalculatorUFP/api/getCredits.py ");
+  $jsonCred=json_decode($resultt);
+  $credits=array();
+
+  foreach ($jsonCred as $key => $cre)
+  {
+    $credits[$key]=$cre;
+  }
   $totalCredits=0;
   $tempmed=0;
   $jsonD= json_decode($result);
@@ -43,10 +20,11 @@ function analyzeComputeString($result)
     {
       foreach ($credits as $key => $cred)
       {
-        if(strcmp($definitivas[$i]->Unidade,$key)==0)
+        if(strcasecmp(trim($definitivas[$i]->Unidade),trim($key))==0)
         {
           $tempmed+=$definitivas[$i]->Nota*$cred;
           $totalCredits+=$cred;
+          break;
         }
       }
     }

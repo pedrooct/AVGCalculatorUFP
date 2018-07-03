@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from lxml import html
 import time
 import sys
@@ -33,7 +34,7 @@ def GetGrades(numberP,password ):
         src = str(br.parsed())
         soup = BeautifulSoup(src, "html.parser")
         comments=soup.find_all(string=lambda text:isinstance(text,Comment))
-        return json.loads(comments[0])
+        return json.loads(comments[0].encode('utf-8'))
     else:
         return  false
 
